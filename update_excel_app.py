@@ -87,13 +87,21 @@ with col2:
         help="This file should contain a 'Status' column"
     )
 
+# Function to read Excel files with caching
+@st.cache_data
+def load_excel_file(file_bytes, file_name):
+    """Load Excel file from uploaded bytes"""
+    return pd.read_excel(BytesIO(file_bytes))
+
 # Process files if both are uploaded
 if main_file and export_file:
     try:
         # Read the Excel files
-        st.info("📖 Reading Excel files...")
-        main_df = pd.read_excel(main_file)
-        export_df = pd.read_excel(export_file)
+        with st.spinner("📖 Reading Excel files..."):
+            main_df = load_excel_file(main_file.getvalue(), main_file.name)
+            export_df = load_excel_file(export_file.getvalue(), export_file.name)
+
+        st.success("✅ Files loaded successfully!")
 
         # Display file previews
         with st.expander("👀 Preview Main File"):
