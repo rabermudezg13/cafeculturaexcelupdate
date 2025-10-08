@@ -10,6 +10,12 @@ from io import BytesIO
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 
+# Function to read Excel files with caching
+@st.cache_data
+def load_excel_file(file_bytes, file_name):
+    """Load Excel file from uploaded bytes"""
+    return pd.read_excel(BytesIO(file_bytes))
+
 # Page configuration
 st.set_page_config(
     page_title="Café Cultura — Excel Updater",
@@ -86,12 +92,6 @@ with col2:
         key='export_file',
         help="This file should contain a 'Status' column"
     )
-
-# Function to read Excel files with caching
-@st.cache_data
-def load_excel_file(file_bytes, file_name):
-    """Load Excel file from uploaded bytes"""
-    return pd.read_excel(BytesIO(file_bytes))
 
 # Process files if both are uploaded
 if main_file and export_file:
